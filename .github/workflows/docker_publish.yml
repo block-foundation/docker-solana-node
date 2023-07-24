@@ -1,0 +1,155 @@
+name: Docker Publish
+
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+
+env:
+  GHCR_SLUG: ghcr.io/${{ github.repository }}
+
+jobs:
+  build:
+
+    name: Docker Publish
+    runs-on: ubuntu-latest
+    steps:
+
+      - 
+        name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - 
+        name: Get Run ID
+        run : |
+          echo Run ID: $GITHUB_RUN_ID
+
+      - 
+        name: Get Run Ref
+        run: |
+          REF=$(echo $GITHUB_REF | cut -d'/' -f 3)
+          echo "REF=$REF" >> $GITHUB_ENV
+          echo Run Ref: $REF
+
+      - 
+        name: Get Tag Commit Hash
+        id: tag-commit-hash
+        run: |
+          hash=${{ GITHUB.SHA }}
+          echo "::set-output name=tag-hash::${hash}"
+          echo Tag Commit Hash: $hash
+
+      - 
+        name: Get Version
+        run: |
+          VERSION=${GITHUB_REF_NAME#v}
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo Version: $VERSION
+  
+      - 
+        name: Get Branch
+        run: |
+          raw=$(git branch -r --contains ${{ github.ref }})
+          BRANCH=${raw##*/}
+          echo "BRANCH=$BRANCH" >> $GITHUB_ENV
+          echo Branch: $BRANCH
+
+      - 
+        name: Set Environment Boolean
+        run: |
+          if [[ "$BRANCH" == "dev" ]] || [[ "$BRANCH" == "tst" ]] || [[ "$BRANCH" == "sta" ]] || [[ "$BRANCH" == "pro" ]]; then
+            echo "NEED=true" >> $GITHUB_ENV
+          else
+            echo "NEED=false" >> $GITHUB_ENV
+          fi
+          echo Need: $NEED
+
+
+
+
+      # Registry Login
+      # =======================================================================
+
+      - name: Login to ACR
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ secrets.REGISTRY_ENDPOINT }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      -
+        name: Login to GHCR
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # -
+      #   name: Login to DockerHub
+      #   uses: docker/login-action@v2
+      #   with:
+      #     username: ${{ secrets.DOCKERHUB_USERNAME }}
+      #     password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+
+
+      -
+        name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: |
+            ${{ env.GHCR_SLUG }}
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=ref,event=pr
+            type=edge
+          labels: |
+            org.opencontainers.image.title=hello-world-buildx
+            org.opencontainers.image.vendor=${{ github.repository_owner }}
+
+
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      -
+        name: Build image
+        uses: docker/bake-action@v2
+        env:
+          # GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
+          REGISTRY_ENDPOINT: ${{ secrets.REGISTRY_ENDPOINT }}
+          REPOSITORY_ENDPOINT: ghcr.io/${{ github.repository }}
+          IMAGE_NAME: ${{ secrets.IMAGE_NAME }}
+          BRANCH: ${{ env.BRANCH }}
+          VERSION: ${{ env.VERSION }}
+        with:
+          files: |
+            ./bin/docker/docker-bake.hcl
+          # ${{ steps.meta.outputs.bake-file }}
+          targets: image-all
+          # pull: true
+          push: true
+          # push: ${{ github.event_name != 'pull_request' }}
+  
+
+
+      # - name: ACR Push
+      #   if: env.NEED == 'true'
+      #   run: |
+      #     docker build . --file src/Dockerfile \
+      #       --tag ${{ secrets.REGISTRY_ENDPOINT }}/${{ secrets.IMAGE_NAME }}:${{ env.BRANCH }}-latest \
+      #       --tag ${{ secrets.REGISTRY_ENDPOINT }}/${{ secrets.IMAGE_NAME }}:${{ env.BRANCH }}-${VERSION}
+      #     docker push ${{ secrets.REGISTRY_ENDPOINT }}/${{ secrets.IMAGE_NAME }} --all-tags
+
+      # - name: build application
+      #   run: make build
