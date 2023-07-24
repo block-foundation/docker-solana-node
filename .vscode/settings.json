@@ -1,0 +1,37 @@
+{
+  "editor.rulers": [79, 80, 119, 120],
+  "editor.fontLigatures": true,
+
+  // "python.defaultInterpreterPath": "/usr/local/bin/python3",
+
+
+  "python.linting.enabled": true,
+
+  "python.linting.pycodestyleEnabled": false,
+  "python.linting.pycodestyleArgs": [
+      "--ignore=E126,E221,E222,E251"
+  ],
+
+
+  "python.formatting.autopep8Args": [
+      "--max-line-length=79",
+      // "--ignore=E221,E251"
+
+  ],
+  "python.linting.flake8Args": [
+      "--max-line-length=79",
+      "--ignore=E126,E221,E222,E251"
+  ],
+
+  "python.linting.pylintEnabled": false,
+  "python.linting.pylintArgs": [
+      "--load-plugins",
+      "--load-plugins=pylint_django",
+      "pylint_django",
+      "--ignore=E126,E221,E222,E251"
+
+      // "--django-settings-module=example.settings",
+],
+"python.linting.flake8Enabled": true
+
+}
