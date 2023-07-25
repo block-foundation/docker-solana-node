@@ -57,7 +57,7 @@ Please refer to the [contribution guidelines](.github/CONTRIBUTING.md) for infor
 
 ### Copyright
 
-Copyright &copy; 2023 [Block Foundation](https://www.blockfoundation.io/ "Block Foundation website"). All Rights Reserved.
+Copyright &copy; 2023 [Stichting Block Foundation](https://www.blockfoundation.io/ "Block Foundation website"). All Rights Reserved.
 
 ### License
 
