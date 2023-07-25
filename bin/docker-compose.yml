@@ -1,12 +1,9 @@
+version: '3'
 
-  # db:
-  #   image: postgres:13.0-alpine
-  #   volumes:
-  #     - postgres_data:/var/lib/postgresql/data/
-  #   environment:
-  #     - POSTGRES_USER=hello_django
-  #     - POSTGRES_PASSWORD=hello_django
-  #     - POSTGRES_DB=hello_django_dev
-
-  # volumes:
-  #   postgres_data:
+services:
+  localnet:
+    image: "solanalabs/solana:v1.7.16"
+    ports:
+      - "8899:8899"
+      - "8900:8900"
+      - "9900:9900"
