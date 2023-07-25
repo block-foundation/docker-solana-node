@@ -1,3 +1,5 @@
+# Copyright Starling Associates BV. All rights reserved.
+
 name: Docker Publish
 
 on:
@@ -72,12 +74,12 @@ jobs:
       # Registry Login
       # =======================================================================
 
-      - name: Login to ACR
-        uses: azure/docker-login@v1
-        with:
-          login-server: ${{ secrets.REGISTRY_ENDPOINT }}
-          username: ${{ secrets.REGISTRY_USERNAME }}
-          password: ${{ secrets.REGISTRY_PASSWORD }}
+      # - name: Login to ACR
+      #   uses: azure/docker-login@v1
+      #   with:
+      #     login-server: ${{ secrets.REGISTRY_ENDPOINT }}
+      #     username: ${{ secrets.REGISTRY_USERNAME }}
+      #     password: ${{ secrets.REGISTRY_PASSWORD }}
 
       -
         name: Login to GHCR
@@ -88,14 +90,12 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # -
-      #   name: Login to DockerHub
-      #   uses: docker/login-action@v2
-      #   with:
-      #     username: ${{ secrets.DOCKERHUB_USERNAME }}
-      #     password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       -
         name: Docker meta
@@ -127,29 +127,18 @@ jobs:
         uses: docker/bake-action@v2
         env:
           # GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
-          REGISTRY_ENDPOINT: ${{ secrets.REGISTRY_ENDPOINT }}
+          # REGISTRY_ENDPOINT: ${{ secrets.REGISTRY_ENDPOINT }}
+          REGISTRY_ENDPOINT: blockfoundation
           REPOSITORY_ENDPOINT: ghcr.io/${{ github.repository }}
           IMAGE_NAME: ${{ secrets.IMAGE_NAME }}
           BRANCH: ${{ env.BRANCH }}
           VERSION: ${{ env.VERSION }}
         with:
           files: |
-            ./bin/docker/docker-bake.hcl
+            ./bin/docker-bake.hcl
           # ${{ steps.meta.outputs.bake-file }}
           targets: image-all
           # pull: true
           push: true
           # push: ${{ github.event_name != 'pull_request' }}
   
-
-
-      # - name: ACR Push
-      #   if: env.NEED == 'true'
-      #   run: |
-      #     docker build . --file src/Dockerfile \
-      #       --tag ${{ secrets.REGISTRY_ENDPOINT }}/${{ secrets.IMAGE_NAME }}:${{ env.BRANCH }}-latest \
-      #       --tag ${{ secrets.REGISTRY_ENDPOINT }}/${{ secrets.IMAGE_NAME }}:${{ env.BRANCH }}-${VERSION}
-      #     docker push ${{ secrets.REGISTRY_ENDPOINT }}/${{ secrets.IMAGE_NAME }} --all-tags
-
-      # - name: build application
-      #   run: make build
