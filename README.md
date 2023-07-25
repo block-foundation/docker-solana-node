@@ -1,22 +1,22 @@
 <div align="right">
 
-  [![license](https://img.shields.io/github/license/block-foundation/docker-polkadot-node?color=green&label=license&style=flat-square)](LICENSE.md)
-  ![stars](https://img.shields.io/github/stars/block-foundation/docker-polkadot-node?color=blue&label=stars&style=flat-square)
+  [![license](https://img.shields.io/github/license/block-foundation/docker-solana-node?color=green&label=license&style=flat-square)](LICENSE.md)
+  ![stars](https://img.shields.io/github/stars/block-foundation/docker-solana-node?color=blue&label=stars&style=flat-square)
 
 </div>
 
 ---
 
 <div>
-    <img align="right" src="https://raw.githubusercontent.com/block-foundation/brand/src/master/logo/logo_gray.png" width="96" alt="Block Foundation Logo">
-    <h1 align="left">Polkadot Node</h1>
+    <img align="right" src="https://raw.githubusercontent.com/block-foundation/brand/master/src/logo/logo_gray.png" width="96" alt="Block Foundation Logo">
+    <h1 align="left">Solana Node</h1>
     <h3 align="left">Block Foundation Docker Containers</h3>
 </div>
 
 ---
 
 <p align="center">
-    <img src="https://raw.githubusercontent.com/block-foundation/brand/src/master/image/repository_cover/block_foundation-form_follows_finance.jpg"width="100%" height="100%" alt="Block Foundation Containers">
+    <img src="https://raw.githubusercontent.com/block-foundation/brand/master/src/image/repository_cover/block_foundation-containers.jpg"width="100%" height="100%" alt="Block Foundation Containers">
 </p>
 
 ## Introduction
