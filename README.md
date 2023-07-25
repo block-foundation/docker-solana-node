@@ -33,6 +33,11 @@ We invite everyone to use, improve, and share their insights about this Docker i
 
 Thank you for being a part of the Block Foundation community. Together, we can redefine the future of architecture and real estate, leveraging technology for societal good.
 
+## Resources
+
+- https://hub.docker.com/r/solanalabs/solana/
+- https://medium.com/rahasak/deploy-solana-test-network-with-docker-418622c4f566
+
 ## Development
 
 ### Authors
